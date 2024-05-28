@@ -3,8 +3,8 @@ This project is driven by my curiosity. I love the market and I am eager to extr
 
 Development Timeline:
 
-V0: Aug 2023 - Prototype with the model 
-V1: May 2024 - Maintance the scraper with the latest structure 
+- V0: Aug 2023 - Prototype with the model 
+- V1: May 2024 - Maintance the scraper with the latest structure 
 
 
 # Introduction
