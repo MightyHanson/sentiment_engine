@@ -99,7 +99,7 @@ class WebScraper:
     # webdriver to infinitely scroll down to catch url until the limit we set
     # solved issue: the pop up only moves once, and stop moving, can only have 10 more articles comparing with default
     # reason: If the website loads the same URLs again when you scroll down,
-    # your script might think it has already collected all the URLs, even though it hasn't.
+    # the script might think it has already collected all the URLs, even though it hasn't.
     # solution: first. Instead of scrolling to the bottom in one go, scroll the page in steps.
     # This can help in triggering the dynamic loading mechanism of the website.
     # second: Introduce Delays: After each scroll,
@@ -170,7 +170,10 @@ class WebScraper:
                 print(f"Failed to scrape {url}. Reason: {e}")
         return articles
     def parse_date(self,date_str: str) -> datetime:
-        return datetime.strptime(date_str, '%B %d, %Y at %I:%M %p').date()
+    #     V0
+        # return datetime.strptime(date_str, '%B %d, %Y at %I:%M %p').date()
+    #     V1
+        return datetime.strptime(date_str, '%a, %b %d, %Y, %I:%M %p').date()
     def scrape_all_articles_with_time_range(self, main_url: str, limit = 50, start_date=None, end_date=None):
         if not start_date:
             end_date = datetime.now().date()
@@ -226,8 +229,16 @@ class WebScraper:
                 driver.execute_script("window.scrollBy(0, window.innerHeight/3);")
                 time.sleep(0.6)
 
-            # Extract article URLs
-            article_links = driver.find_elements(By.CSS_SELECTOR, "a.js-content-viewer")
+                # WebDriverWait makes the driver wait up to 15 seconds for the condition
+                WebDriverWait(driver, 15).until(
+                    # EC.presence_of_all_elements_located waits until elements matching the selector are found
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.titles-link, a.subtle-link, a.tw-w-full"))
+                )
+
+                article_links = driver.find_elements(By.CSS_SELECTOR, "a.titles-link, a.subtle-link, a.tw-w-full")
+
+                # Debugging print statements
+                print(f"Found {len(article_links)} links on the current scroll.")
 
             for link in article_links:
                 try:
